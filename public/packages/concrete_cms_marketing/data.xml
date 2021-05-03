@@ -6,25 +6,4 @@
               package="concrete_cms_marketing">
         </page>
     </singlepages>
-    <blocktypes>
-        <blocktype handle="image_with_quote" package="concrete_cms_marketing"/>
-    </blocktypes>
-    <thumbnailtypes>
-        <thumbnailtype name="Case Study Thumbnail" handle="case_study_thumbnail" width="672" height="464"
-                       sizingMode="exact"/>
-    </thumbnailtypes>
-    <summarytemplates>
-        <template handle="case_study_item" name="Case Study Item"
-                  icon="blank.png" package="concrete_cms_marketing">
-            <categories>
-                <category handle="page"/>
-            </categories>
-            <fields>
-                <field required="1">title</field>
-                <field required="1">link</field>
-                <field required="0">thumbnail</field>
-                <field>description</field>
-            </fields>
-        </template>
-    </summarytemplates>
 </concrete5-cif>
