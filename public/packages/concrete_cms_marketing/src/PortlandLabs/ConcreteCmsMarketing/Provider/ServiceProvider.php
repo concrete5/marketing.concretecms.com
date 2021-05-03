@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @project:   ConcreteCMS Marketing
+ * @project:   ConcreteCMS Documentation
  *
  * @copyright  (C) 2021 Portland Labs (https://www.portlandlabs.com)
  * @author     Fabian Bitter (fabian@bitter.de)
@@ -9,26 +9,41 @@
 
 namespace PortlandLabs\ConcreteCmsMarketing\Provider;
 
+use Concrete\Core\Asset\AssetList;
+use Concrete\Core\Entity\Package;
+use Concrete\Core\Events\EventDispatcher;
 use Concrete\Core\Foundation\Service\Provider;
-use Concrete\Core\Search\Pagination\View\ManagerServiceProvider as CorePaginationManager;
-use PortlandLabs\ConcreteCmsMarketing\Search\Pagination\View\Manager;
-use PortlandLabs\ConcreteCmsMarketing\Search\Pagination\View\ManagerServiceProvider as PaginationManager;
-use PortlandLabs\ConcreteCmsMarketing\Search\Pagination\View\PagerManager;
+use Concrete\Core\Package\PackageService;
+use Concrete\Core\Support\Facade\Application;
+use Concrete\Core\View\View;
+use Concrete\Package\ConcreteCmsMarketing\Controller;
 
 class ServiceProvider extends Provider
 {
 
+    /**
+     * Registers the services provided by this provider.
+     */
     public function register()
     {
-        $this->app['manager/view/pagination'] = $this->app->share(function ($app) {
-            return new Manager($app);
-        });
+        $al = AssetList::getInstance();
+        $app = Application::getFacadeApplication();
+        /** @var EventDispatcher $eventDispatcher */
+        $eventDispatcher = $app->make(EventDispatcher::class);
+        /** @var PackageService $packageService */
+        $packageService = $app->make(PackageService::class);
+        /** @var Package $pkgEntity */
+        $pkgEntity = $packageService->getByHandle("concrete_cms_marketing");
+        /** @var Controller $pkg */
+        $pkg = $pkgEntity->getController();
 
-        $this->app['manager/view/pagination/pager'] = $this->app->share(function ($app) {
-            return new PagerManager($app);
-        });
+        $al->register(
+            'css', 'concrete-cms-marketing', 'css/concrete-cms-marketing.css',
+            ['minify' => false, 'combine' => false], $pkg
+        );
 
-        $this->app->bind(CorePaginationManager::class, PaginationManager::class);
+        $eventDispatcher->addListener('on_before_render', function () {
+            View::getInstance()->requireAsset("css", "concrete-cms-marketing");
+        });
     }
-
 }
