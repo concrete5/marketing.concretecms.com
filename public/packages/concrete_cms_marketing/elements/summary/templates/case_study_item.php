@@ -31,6 +31,7 @@ $pkg = $pkgEntity->getController();
 
 $defaultThumbnailUrl = $pkg->getRelativePath() . "/images/default-thumbnail.jpg";
 
+$thumbnail = $thumbnail ? \Concrete\Core\File\File::getByID($thumbnail->jsonSerialize()["fID"]) : null;
 ?>
 
 <div class="case-study-item">
@@ -46,13 +47,13 @@ $defaultThumbnailUrl = $pkg->getRelativePath() . "/images/default-thumbnail.jpg"
     }
     ?>
 
-    <a href="<?php echo $link; ?>" class="thumbnail">
+    <a href="<?php echo (string)$link; ?>" class="thumbnail">
         <img src="<?php echo $thumbnailUrl ?? $defaultThumbnailUrl; ?>"
              alt="<?php echo h($title); ?>">
     </a>
 
     <h3 class="title">
-        <a href="<?php echo $title; ?>">
+        <a href="<?php echo (string)$link; ?>">
             <?php echo $title; ?>
         </a>
     </h3>
